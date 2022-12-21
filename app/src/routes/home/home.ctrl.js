@@ -1,9 +1,6 @@
 "use strict";
 
-const users = {
-    id: ["aaa", "bbb", "ccc"],
-    psword: ["123", "1234", "12345"]
-}
+const UserStorage = require("../../models/UserStorage");
 
 const output = {
     home: (req, res) => {
@@ -20,15 +17,20 @@ const process = {
     login: (req, res) => {
         const id = req.body.id;
         const psword = req.body.psword;
-
+        
+        const users = UserStorage.getUsers("id", "psword");
+        
+        const response = {};
         if (users.id.includes(id)) {
             const idx = users.id.indexOf(id);
             if (users.psword[idx] === psword) {
-                return res.json({success: true, message:"로그인 성공."})
+                response.success = true;
+                return res.json(response)
             }
         }
-
-        return res.json({success: false, message: "로그인 실패!!!"})
+        response.success = false;
+        response.message = "로그인 실패!!!";
+        return res.json(response)
                 /*
                 res.json 의 반환값은 promise. 
                 기본 res의 반환값은 Reponse 스트림인데, json() 메서드를 통해서 
