@@ -1,6 +1,6 @@
 "use strict";
 
-const UserStorage = require("../../models/UserStorage");
+const User = require("../../models/User");
 
 const output = {
     home: (req, res) => {
@@ -15,30 +15,9 @@ const output = {
 
 const process = {
     login: (req, res) => {
-        const id = req.body.id;
-        const psword = req.body.psword;
-        
-        const users = UserStorage.getUsers("id", "psword");
-        
-        const response = {};
-        if (users.id.includes(id)) {
-            const idx = users.id.indexOf(id);
-            if (users.psword[idx] === psword) {
-                response.success = true;
-                return res.json(response)
-            }
-        }
-        response.success = false;
-        response.message = "로그인 실패!!!";
-        return res.json(response)
-                /*
-                res.json 의 반환값은 promise. 
-                기본 res의 반환값은 Reponse 스트림인데, json() 메서드를 통해서 
-                Response(응답) 스트림을 읽을 수 있어.
-                Response는 데이터가 모두 받아진 상태가 아냐.
-                json() 으로 Response 스트림을 가져와 완료될 때까지 읽는거야.
-                다 읽은 body의 텍스트를 promise 형태로 반환.
-                */
+        const user = new User(req.body);
+        const response = user.login();
+        return res.json(response);
     }
 }
 
