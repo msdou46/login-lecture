@@ -20,9 +20,15 @@ class User {
         return {success: false, message: "존재하지 않는 아이디입니다."};
     }
 
-    register() {
+    async register() {
         const client = this.body;
-        UserStorage.save(client)
+        try {
+            const response = await UserStorage.save(client);
+            return response
+        } catch (err) {
+            return {success: false, message: err};
+        }
+
     }
 }
 
