@@ -3,6 +3,7 @@
 // 모듈
 const express = require("express");
 const dotenv = require("dotenv");
+const logger = require("./src/config/logger")
 const morgan = require("morgan");
 
 const app = express();
@@ -26,10 +27,12 @@ app.set("view engine", "ejs")
     ejs 는 html 과 굉장히 흡사한 핸진.
     */
 app.use(express.json());
-app.use(morgan("dev")); // 개발용으로 콘솔에 출력하도록. 
-app.use(morgan("common", { stream: accessLogStream}));    // morgan 미들웨어 등록. 그리고 log 파일에 로그를 남김.
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(`${__dirname}/src/public`))
+app.use(morgan("dev")); // 개발용으로 콘솔에 출력하도록. 참고로 /register get 메소드, css, js 까지 총 3개를 띄움.
+app.use(morgan("tiny", { stream: logger.stream}));    // morgan 미들웨어 등록. 그리고 log 파일에 로그를 남김.
+                                    // stream, 즉 여길 거쳐서 온다는 것. 
+                                    // 도중에 스트림을 지나면서 logger에서 지정해준 파일 저장이 발동.
 
 app.use("/", home);
 

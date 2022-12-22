@@ -43,4 +43,9 @@ if (process.env.NODE_ENV !== "production") {    // 개발용 서버와 배포용
     logger.add(opts.console)
 }
 
+logger.stream = {
+    write: (message) => logger.info(message)
+        //  두 번째 인자로 encoding 이란 것도 받긴 해.
+}
+
 module.exports = logger;

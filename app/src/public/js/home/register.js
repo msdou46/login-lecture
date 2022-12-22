@@ -32,7 +32,7 @@ const register = () => {
             if (res.success) {
                 location.href="/login";
             } else {
-                alert(res.message);
+                if (res.err) return alert(res.err);
             }
         })
         .catch ((err) => {
