@@ -2,12 +2,16 @@
 
 // 모듈
 const express = require("express");
-const app = express();
 const dotenv = require("dotenv");
+const morgan = require("morgan");
+
+const app = express();
 dotenv.config();
 
 // 라우팅
 const home = require("./src/routes/home");  // index.js 를 가져와.
+const accessLogStream = require("./src/config/log") 
+            // morgan 을 통해 어느 폴더에 로그 파일을 남기고 싶은지 설정하는 로직.
 
 // 앱 세팅
 app.set("views", "./src/views");    // ./ 는 현재 디렉토리 위치를 뜻해.
@@ -22,6 +26,8 @@ app.set("view engine", "ejs")
     ejs 는 html 과 굉장히 흡사한 핸진.
     */
 app.use(express.json());
+app.use(morgan("dev")); // 개발용으로 콘솔에 출력하도록. 
+app.use(morgan("common", { stream: accessLogStream}));    // morgan 미들웨어 등록. 그리고 log 파일에 로그를 남김.
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(`${__dirname}/src/public`))
 
